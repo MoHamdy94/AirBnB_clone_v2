@@ -57,30 +57,29 @@ class HBNBCommand(cmd.Cmd):
         print("")
         return True
 
-    def do_create(self, arg):
-        """
-            Creates a new instance of BaseModel,
-            saves it (to the JSON file) and prints
-            the id.
+    def do_create(self, line):
+        """Creates a new instance of BaseModel, saves it
+        Exceptions:
+            SyntaxError: when there is no args given
+            NameError: when there is no object taht has the name
         """
         try:
-            if not args:
+            if not line:
                 raise SyntaxError()
-            arg_list = args.split(" ")
-            kw = {}
-            for arg in arg_list[1:]:
-                split_arg = arg.split("=")
-                split_arg[1] = eval(split_arg[1])
-                if type(split_arg[1]) is str:
-                    split_arg[1] = split_arg[1].replace("_", " ").replace('"', '\\"')
-                kw[split_arg[0]] = split_arg[1]
+            my_list = line.split(" ")
+            obj = eval("{}()".format(my_list[0]))
+            # New code
+            for index in range(1, len(my_list)):
+                p_v = self.valid_param(my_list[index])
+                if p_v:
+                    obj.__dict__[p_v[0]] = p_v[1]
+            # End new code
+            obj.save()
+            print("{}".format(obj.id))
         except SyntaxError:
             print("** class name missing **")
         except NameError:
             print("** class doesn't exist **")
-        new_instance = HBNBCommand.classes[arg_list[0]](**kw)
-        new_instance.save()
-        print(new_instance.id)
 
     def do_show(self, arg):
         """
