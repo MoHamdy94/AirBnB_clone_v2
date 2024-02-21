@@ -63,22 +63,24 @@ class HBNBCommand(cmd.Cmd):
             saves it (to the JSON file) and prints
             the id.
         """
-
-        arg_lst = HBNBCommand.parse(arg)
-        if len(arg_lst) == 0:
+        try:
+            if not args:
+                raise SyntaxError()
+            arg_list = args.split(" ")
+            kw = {}
+            for arg in arg_list[1:]:
+                split_arg = arg.split("=")
+                split_arg[1] = eval(split_arg[1])
+                if type(split_arg[1]) is str:
+                    split_arg[1] = split_arg[1].replace("_", " ").replace('"', '\\"')
+                kw[split_arg[0]] = split_arg[1]
+        except SyntaxError:
             print("** class name missing **")
-            return False
-
-        if len(arg_lst) > 1:
-            print("** to many arguments **")
-            return False
-
-        if (arg_lst[0] in HBNBCommand.__class_lst.keys()):
-            new_obj = HBNBCommand.__class_lst[arg_lst[0]]()
-            new_obj.save()
-            print(new_obj.id)
-        else:
+        except NameError:
             print("** class doesn't exist **")
+        new_instance = HBNBCommand.classes[arg_list[0]](**kw)
+        new_instance.save()
+        print(new_instance.id)
 
     def do_show(self, arg):
         """

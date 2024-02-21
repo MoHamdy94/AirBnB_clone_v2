@@ -13,9 +13,17 @@ class FileStorage:
     def __init__(self):
         pass
 
-    def all(self):
+    def all(self, cls = None):
         ''' return dictionary __objects'''
-        return FileStorage.__objects
+        if cls is not None:
+            if type(cls) == str:
+                cls = eval(cls)
+            cls_dict = {}
+            for i, j in self.__objects.items():
+                if type(j) == cls:
+                    cls_dict[i] = j
+            return cls_dict
+        return self.__objects
 
     def new(self, obj):
         ''' add object to __objects dictionary '''
@@ -45,3 +53,11 @@ class FileStorage:
                             value['__class__'])(**value)
                 except json.JSONDecodeError:
                     pass
+    
+    def delete(self, obj=None):
+        try:
+            del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
+        except (AttributeError, keyError):
+            pass
+
+
