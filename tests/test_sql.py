@@ -44,7 +44,7 @@ class TestMySQL(unittest.TestCase):
         self.disconnection()
 
     def test_create_city(self):
-        """Test create of a City"""
+        """Test create of a city"""
         self.connection()
         with patch('sys.stdout', new=io.StringIO()) as f:
             HBNBCommand().onecmd('create State name="California"')
