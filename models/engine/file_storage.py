@@ -53,11 +53,4 @@ class FileStorage:
                             value['__class__'])(**value)
                 except json.JSONDecodeError:
                     pass
-    
-    def delete(self, obj=None):
-        try:
-            del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
-        except (AttributeError, keyError):
-            pass
-
 
